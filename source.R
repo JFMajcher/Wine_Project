@@ -6,7 +6,7 @@ apply(wine.ds , 2 , quantile , probs = quants , na.rm = TRUE)
 apply(wine.ds, 2, FUN = IQR)
 apply(wine.ds, 2, FUN = var)
 apply(wine.ds, 2, FUN = sd)
-install.packages("e1071")
+# install.packages("e1071")
 library(e1071)
 apply(wine.ds, 2, FUN = skewness)
 apply(wine.ds, 2, FUN = kurtosis)
@@ -29,7 +29,7 @@ summary(wine.ds)
 head(wine.ds)
 pairs(wine.ds, col = wine.ds$quality)
 
-wine39 = subset(wine.ds, subset=(wine.ds$quality == "3" | wine.ds$quality == "9") & wine.ds$chlorides < 0.15)
+wine39 = subset(wine.ds, subset=(wine.ds$quality == "3" | wine.ds$quality == "8"| wine.ds$quality == "9") & wine.ds$chlorides < 0.15)
 pairs(wine39, col = wine39$quality)
 
 boxplot(wine.ds$fixed.acidity ~ wine.ds$quality)
@@ -44,7 +44,7 @@ boxplot(wine.ds$pH ~ wine.ds$quality)
 boxplot(wine.ds$sulphates ~ wine.ds$quality)
 boxplot(wine.ds$alcohol ~ wine.ds$quality)
 
-install.packages("xlsx")
+# install.packages("xlsx")
 library("xlsx")
 write.xlsx(wine.stats, "wine_stats.xlsx")
 
@@ -57,3 +57,45 @@ train.wine$quality <- as.factor(train.wine$quality)
 valid.wine$quality <- as.factor(valid.wine$quality)
 test.wine$quality <- as.factor(test.wine$quality)
 
+train.wine$quality <- as.numeric(train.wine$quality)
+# wine.glm<-lm(quality~fixed.acidity+volatile.acidity+citric.acid+residual.sugar+chlorides+free.sulfur.dioxide+total.sulfur.dioxide+density+pH+sulphates+alcohol, data=train.wine)
+# summary(wine.glm)
+# plot(wine.glm)
+
+wine9train = subset(train.wine, subset = train.wine$quality == 7)
+ideal.wine <-  colMeans(wine9train)
+ideal.wine
+
+wine.difs <- sweep(wine9train, 0, ideal.wine)
+# wine.difs <- apply(wine9train, FUN = function(x) x-ideal.wine, MARGIN = [,12])
+
+
+library(rpart)
+tree <- rpart(formula = quality~fixed.acidity+volatile.acidity+citric.acid+residual.sugar+chlorides+free.sulfur.dioxide+total.sulfur.dioxide+density+pH+sulphates+alcohol,
+              data = train.wine, 
+              method = "class",
+              na.action=na.pass, 
+              parms = list(split=c("information","gini")), 
+              # control = rpart.control(usersurrogate = 0, maxsurrogate = 0, cp = 0.00075)
+              control = rpart.control(cp = 0.00075),
+              maxdepth = 10
+              )
+# tree
+summary(tree)
+
+tablica <- table(predict(tree, train.wine, type="class"), train.wine$quality)
+tablica
+sum(tablica)-sum(diag(tablica))
+sum(diag(tablica)) / sum(tablica)
+
+
+tablica <- table(predict(tree, valid.wine, type="class"), valid.wine$quality)
+tablica
+# sum(tablica)-sum(diag(tablica))
+sum(diag(tablica)) / sum(tablica)
+
+# X11()
+# plot(tree)
+
+# library(maptree)
+# draw.tree(tree)
