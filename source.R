@@ -29,7 +29,7 @@ summary(wine.ds)
 head(wine.ds)
 pairs(wine.ds, col = wine.ds$quality)
 
-wine39 = subset(wine.ds, subset=(wine.ds$quality == "3" | wine.ds$quality == "9"))
+wine39 = subset(wine.ds, subset=(wine.ds$quality == "3" | wine.ds$quality == "9") & wine.ds$chlorides < 0.15)
 pairs(wine39, col = wine39$quality)
 
 boxplot(wine.ds$fixed.acidity ~ wine.ds$quality)
