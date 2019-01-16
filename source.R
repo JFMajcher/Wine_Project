@@ -25,3 +25,11 @@ wine.stats[7,] <- apply(wine.ds, 2, FUN = sd)
 wine.stats[8,] <- apply(wine.ds, 2, FUN = skewness)
 wine.stats[9,] <- apply(wine.ds, 2, FUN = kurtosis)
 
+install.packages("xlsx")
+library("xlsx")
+write.xlsx(wine.stats, "wine_stats.xlsx")
+
+splitSample <- sample(1:3, size=nrow(wine.ds), prob=c(0.7,0.15,0.15), replace = TRUE)
+train.wine <- wine.ds[splitSample==1,]
+valid.wine <- wine.ds[splitSample==2,]
+test.wine <- wine.ds[splitSample==3,]
