@@ -44,3 +44,16 @@ boxplot(wine.ds$pH ~ wine.ds$quality)
 boxplot(wine.ds$sulphates ~ wine.ds$quality)
 boxplot(wine.ds$alcohol ~ wine.ds$quality)
 
+install.packages("xlsx")
+library("xlsx")
+write.xlsx(wine.stats, "wine_stats.xlsx")
+
+splitSample <- sample(1:3, size=nrow(wine.ds), prob=c(0.7,0.15,0.15), replace = TRUE)
+train.wine <- wine.ds[splitSample==1,]
+valid.wine <- wine.ds[splitSample==2,]
+test.wine <- wine.ds[splitSample==3,]
+
+train.wine$quality <- as.factor(train.wine$quality)
+valid.wine$quality <- as.factor(valid.wine$quality)
+test.wine$quality <- as.factor(test.wine$quality)
+
