@@ -33,3 +33,7 @@ splitSample <- sample(1:3, size=nrow(wine.ds), prob=c(0.7,0.15,0.15), replace = 
 train.wine <- wine.ds[splitSample==1,]
 valid.wine <- wine.ds[splitSample==2,]
 test.wine <- wine.ds[splitSample==3,]
+
+train.wine$quality <- as.factor(train.wine$quality)
+valid.wine$quality <- as.factor(valid.wine$quality)
+test.wine$quality <- as.factor(test.wine$quality)
