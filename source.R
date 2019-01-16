@@ -25,3 +25,22 @@ wine.stats[7,] <- apply(wine.ds, 2, FUN = sd)
 wine.stats[8,] <- apply(wine.ds, 2, FUN = skewness)
 wine.stats[9,] <- apply(wine.ds, 2, FUN = kurtosis)
 
+summary(wine.ds)
+head(wine.ds)
+pairs(wine.ds, col = wine.ds$quality)
+
+wine39 = subset(wine.ds, subset=(wine.ds$quality == "3" | wine.ds$quality == "9"))
+pairs(wine39, col = wine39$quality)
+
+boxplot(wine.ds$fixed.acidity ~ wine.ds$quality)
+boxplot(wine.ds$volatile.acidity ~ wine.ds$quality)
+boxplot(wine.ds$citric.acid ~ wine.ds$quality)
+boxplot(wine.ds$residual.sugar ~ wine.ds$quality)
+boxplot(wine.ds$chlorides ~ wine.ds$quality)
+boxplot(wine.ds$free.sulfur.dioxide ~ wine.ds$quality)
+boxplot(wine.ds$total.sulfur.dioxide ~ wine.ds$quality)
+boxplot(wine.ds$density ~ wine.ds$quality)
+boxplot(wine.ds$pH ~ wine.ds$quality)
+boxplot(wine.ds$sulphates ~ wine.ds$quality)
+boxplot(wine.ds$alcohol ~ wine.ds$quality)
+
