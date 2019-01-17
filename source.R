@@ -44,6 +44,22 @@ boxplot(wine.ds$pH ~ wine.ds$quality)
 boxplot(wine.ds$sulphates ~ wine.ds$quality)
 boxplot(wine.ds$alcohol ~ wine.ds$quality)
 
+library(ggplot2)
+ggplot(wine.ds, aes(x=residual.sugar, y=density, color=as.factor(quality))) +
+  geom_point()
+ggplot(wine.ds, aes(x=alcohol, y=density, color=as.factor(quality))) +
+  geom_point()
+ggplot(wine.ds, aes(x=alcohol, y=residual.sugar, color=as.factor(quality))) +
+  geom_point()
+ggplot(wine.ds, aes(x=quality, y=alcohol, color=as.factor(quality), fill=as.factor(quality))) + 
+  geom_boxplot(outlier.colour="black", outlier.shape=16,
+               outlier.size=2, notch=TRUE)
+ggplot(wine.ds, aes(x=quality, y=residual.sugar, color=as.factor(quality), fill=as.factor(quality))) + 
+  geom_boxplot(outlier.colour="black", outlier.shape=16,
+               outlier.size=2, notch=TRUE)
+ggplot(wine.ds, aes(x=quality, y=density, color=as.factor(quality), fill=as.factor(quality))) + 
+  geom_boxplot(outlier.colour="black", outlier.shape=16,
+               outlier.size=2, notch=TRUE)
 # install.packages("xlsx")
 library("xlsx")
 write.xlsx(wine.stats, "wine_stats.xlsx")
