@@ -53,11 +53,46 @@ train.wine <- wine.ds[splitSample==1,]
 valid.wine <- wine.ds[splitSample==2,]
 test.wine <- wine.ds[splitSample==3,]
 
+
+
 train.wine$quality <- as.factor(train.wine$quality)
 valid.wine$quality <- as.factor(valid.wine$quality)
 test.wine$quality <- as.factor(test.wine$quality)
 
-train.wine$quality <- as.numeric(train.wine$quality)
+minmax.wine <- wine.ds
+for (i in 1:nrow(wine.ds)){
+  for(j in 1:ncol(wine.ds)){
+    minmax.wine[i,j] <- (wine.ds[i,j] - min(wine.ds[,j]))/(max(wine.ds[,j]-min(wine.ds[,j]))) 
+  }
+}
+minmax.wine$quality <- as.factor(wine.ds$quality)
+splitSample.minmax <- sample(1:3, size=nrow(minmax.wine), prob=c(0.7,0.15,0.15), replace = TRUE)
+train.minmax <- minmax.wine[splitSample==1,]
+valid.minmax <- minmax.wine[splitSample==2,]
+test.minmax <- minmax.wine[splitSample==3,]
+
+tree1 <- rpart(formula = quality~fixed.acidity+volatile.acidity+citric.acid+residual.sugar+chlorides+free.sulfur.dioxide+total.sulfur.dioxide+density+pH+sulphates+alcohol,
+              data = train.wine, 
+              method = "class"
+)
+summary(tree1)
+plot(tree1)
+text(tree1)
+
+tablica <- table(predict(tree1, train.wine, type="class"), train.wine$quality)
+tablica <- table(predict(tree2, train.minmax, type="class"), train.minmax$quality)
+tablica <- table(predict(tree1, test.wine, type="class"), test.wine$quality)
+tablica <- table(predict(tree1, test.minmax, type="class"), test.minmax$quality)
+tablica
+sum(tablica)-sum(diag(tablica))
+sum(diag(tablica)) / sum(tablica)
+tree2 <- rpart(formula = quality~fixed.acidity+volatile.acidity+citric.acid+residual.sugar+chlorides+free.sulfur.dioxide+total.sulfur.dioxide+density+pH+sulphates+alcohol,
+              data = train.minmax, 
+              method = "class"
+)
+plot(tree2)
+text(tree2)
+#train.wine$quality <- as.numeric(train.wine$quality)
 # wine.glm<-lm(quality~fixed.acidity+volatile.acidity+citric.acid+residual.sugar+chlorides+free.sulfur.dioxide+total.sulfur.dioxide+density+pH+sulphates+alcohol, data=train.wine)
 # summary(wine.glm)
 # plot(wine.glm)
